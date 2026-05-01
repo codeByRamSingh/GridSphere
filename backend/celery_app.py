@@ -21,6 +21,7 @@ celery_app.conf.update(
     enable_utc=True,
     task_acks_late=True,
     worker_prefetch_multiplier=1,
+    broker_connection_retry_on_startup=True,
     task_routes={
         "app.ai_agents.tasks.run_sales_agent":      {"queue": "agents"},
         "app.ai_agents.tasks.run_deployment_agent": {"queue": "agents"},
