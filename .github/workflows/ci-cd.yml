@@ -1,4 +1,23 @@
-name: CI Test
+# ══════════════════════════════════════════════════════════════════════════════
+# GridSphere CI/CD Pipeline
+#
+# Jobs
+#   frontend-ci   → lint · typecheck · build          (PRs + main push)
+#   backend-ci    → migrate · pytest · app-validate   (PRs + main push)
+#   docker-build  → build & push images to GHCR       (main push only)
+#   deploy        → SSH rolling restart on production  (main push only)
+#
+# Required GitHub Secrets
+#   SERVER_IP            Production server IP / hostname
+#   SERVER_USER          SSH username on production server
+#   SERVER_SSH_KEY       Private SSH key (PEM, passphrase-less)
+#   NEXT_PUBLIC_API_URL  Public URL of the backend (https://api.yourdomain.com/api/v1)
+#   DATABASE_URL         postgresql+psycopg://user:pass@host:5432/db
+#   JWT_SECRET           Production JWT signing secret
+#   REDIS_URL            redis://host:6379/0
+# ══════════════════════════════════════════════════════════════════════════════
+
+name: GridSphere CI/CD
 
 on:
   pull_request:
@@ -6,12 +25,303 @@ on:
   push:
     branches: [main]
 
+# Cancel any in-flight run for the same branch when a new commit is pushed.
+# Keeps runners free and prevents stale deployments from racing ahead.
+concurrency:
+  group: gridsphere-${{ github.ref }}
+  cancel-in-progress: true
+
+# ──────────────────────────────────────────────────────────────────────────────
+# JOB 1  Frontend CI
+# Runs on every PR targeting dev or main, and on every push to main.
+# Steps: install → lint → typecheck → production build
+# ──────────────────────────────────────────────────────────────────────────────
 jobs:
-  test:
+  frontend-ci:
+    name: "Frontend — Lint · TypeCheck · Build"
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    defaults:
+      run:
+        working-directory: frontend   # all `run` steps execute inside /frontend
 
-      - name: Test Run
-        run: echo "CI is working"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Node 20 LTS. Cache is keyed on package-lock.json so a lockfile change
+      # busts the cache and forces a clean install.
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # `npm ci` is deterministic (frozen lockfile). Never use `npm install` in CI.
+      - name: Install dependencies
+        run: npm ci
+
+      # ESLint via the next lint wrapper (respects .eslintrc.json)
+      - name: ESLint
+        run: npm run lint
+
+      # Strict TypeScript check — catches type errors ESLint won't catch.
+      # Defined in package.json as: tsc --noEmit
+      - name: TypeScript check
+        run: npm run typecheck
+
+      # Full Next.js production build. Catches SSR/SSG errors, broken imports,
+      # and missing env vars that only surface at build time.
+      # NEXT_TELEMETRY_DISABLED prevents network calls to Vercel telemetry in CI.
+      - name: Production build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+          NEXT_TELEMETRY_DISABLED: 1
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 2  Backend CI
+  # Spins up real Postgres 16 + Redis 7 (exact same images as docker-compose.yml)
+  # so the test DB matches production engine and version exactly.
+  # Steps: install → migrate → pytest → app-load validation
+  # ──────────────────────────────────────────────────────────────────────────
+  backend-ci:
+    name: "Backend — Migrate · Test · Validate"
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    # Service containers start before any step and are torn down after the job.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: gridsphere_test
+          POSTGRES_USER: gridsphere
+          POSTGRES_PASSWORD: gridsphere
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U gridsphere -d gridsphere_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # Visible to every `run` step in this job.
+    # Celery tasks will not actually dispatch in CI (broker is local Redis).
+    env:
+      DATABASE_URL: postgresql+psycopg://gridsphere:gridsphere@localhost:5432/gridsphere_test
+      REDIS_URL: redis://localhost:6379/0
+      JWT_SECRET: ci-test-secret-not-for-production
+      BACKEND_CORS_ORIGINS: http://localhost:3000
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Cache keyed on requirements.txt — a dep change busts it automatically.
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      # Run all 4 Alembic migrations (0001→0004) against the fresh test DB.
+      # Validates that every migration applies cleanly on a clean schema.
+      - name: Apply Alembic migrations
+        run: alembic upgrade head
+
+      # -x       stop on first failure
+      # --tb=short  concise tracebacks
+      # --ignore=alembic  skip migration scripts
+      # Exit code 5 = "no tests collected" — treat as pass so CI doesn't
+      # block PRs on repos that haven't added tests yet.
+      - name: Run pytest
+        run: |
+          pytest --tb=short -q -x --ignore=alembic \
+            || { code=$?; [ $code -eq 5 ] && echo "No tests collected — skipping" || exit $code; }
+
+      # Import the FastAPI app and print registered routes.
+      # Catches circular imports, broken __init__ chains, and missing env vars
+      # that pytest might not exercise.
+      - name: Validate FastAPI application
+        run: |
+          python -c "
+          from app.main import app
+          routes = [r.path for r in app.routes]
+          print(f'OK — {len(routes)} routes registered')
+          for r in sorted(routes): print(f'  {r}')
+          "
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 3  Docker Build + Push to GitHub Container Registry
+  # Only runs on push to main. Both CI jobs must pass first.
+  #
+  # Layer cache (type=gha, scoped per service) means unchanged layers are
+  # reused across runs — typically cuts build time 60-80%.
+  #
+  # Double-tagged images:
+  #   :latest   → always the newest successful main build
+  #   :<sha>    → immutable, used for rollbacks
+  # ──────────────────────────────────────────────────────────────────────────
+  docker-build:
+    name: "Docker — Build & Push Images"
+    runs-on: ubuntu-latest
+    needs: [frontend-ci, backend-ci]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: read
+      packages: write   # required to push to ghcr.io
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Buildx enables BuildKit (parallel layer build, better caching).
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # GITHUB_TOKEN is auto-provided — no manual secret required.
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Backend image ──────────────────────────────────────────────────────
+      - name: Build & push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/backend:latest
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,scope=backend,mode=max
+
+      # ── Frontend image ─────────────────────────────────────────────────────
+      # NEXT_PUBLIC_API_URL is baked into the JS bundle at Next.js build time.
+      # It must be a build-arg, NOT a runtime env var.
+      - name: Build & push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/frontend:latest
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 4  Deploy to Production
+  # SSH → git pull → migrate → rolling restart (backend → celery → frontend)
+  #
+  # "environment: production" unlocks GitHub's protection rules:
+  # required reviewers, wait timers, deployment history.
+  # Configure in: repo Settings → Environments → production
+  #
+  # Rolling strategy (single-server, minimal-downtime):
+  #   1. Pull new images (no service disruption)
+  #   2. Run migrations on new image (no service disruption)
+  #   3. Restart backend only → wait for /health (brief downtime ~5-10s)
+  #   4. Restart celery-worker (stateless; Redis re-queues interrupted tasks)
+  #   5. Restart frontend (connects to backend over the network; ~2s downtime)
+  # ──────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: "Deploy — Production"
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            APP_DIR="/opt/gridsphere"
+
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo " GridSphere Deploy  $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+            echo "[1/6] Pulling latest code..."
+            cd "$APP_DIR"
+            git fetch origin main --quiet
+            git reset --hard origin/main
+
+            echo "[2/6] Pulling Docker images from GHCR..."
+            # docker compose pull reads image: tags from docker-compose.yml
+            # Your docker-compose.yml on the server should reference ghcr.io
+            # images (see setup notes in README / deployment docs).
+            docker compose pull --quiet
+
+            echo "[3/6] Running Alembic migrations..."
+            # --rm removes the ephemeral container after migration completes.
+            # The running backend is NOT restarted yet — migration runs on
+            # the new image against the live DB before any service changes.
+            docker compose run --rm backend alembic upgrade head
+
+            echo "[4/6] Rolling restart — backend..."
+            docker compose up -d --no-deps backend
+            echo "  Waiting for /health endpoint (timeout 90s)..."
+            timeout 90 bash -c \
+              'until docker compose exec -T backend \
+                python -c "import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")" \
+                2>/dev/null; do
+                  printf "."
+                  sleep 5
+               done'
+            echo ""
+            echo "  Backend healthy."
+
+            echo "[5/6] Rolling restart — celery-worker..."
+            # Celery re-queues interrupted tasks automatically via Redis
+            # visibility timeout (default 1 h), so mid-task kills are safe.
+            docker compose up -d --no-deps celery-worker
+
+            echo "[6/6] Rolling restart — frontend..."
+            docker compose up -d --no-deps frontend
+
+            echo "  Pruning images older than 24 h..."
+            docker image prune -f --filter "until=24h"
+
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo " Deployment complete."
+            docker compose ps
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      # Printed in the Actions UI when deploy fails — tells the operator
+      # exactly what to run without needing to re-SSH manually.
+      - name: Deployment failed — diagnostics
+        if: failure()
+        run: |
+          echo "::error::Deployment failed. SSH into the server and run:"
+          echo "::error::  cd /opt/gridsphere"
+          echo "::error::  docker compose logs --tail=100"
+          echo "::error::  docker compose ps"
