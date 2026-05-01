@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, func, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 
 from app.db.base import Base
 
@@ -227,3 +228,131 @@ class ClientUser(TimestampMixin, Base):
 
     client: Mapped["Client"] = relationship(back_populates="users")
     user: Mapped["User | None"] = relationship(foreign_keys=[user_id])
+
+
+# ── BuildGrid ──────────────────────────────────────────────────────────────────
+
+class BGProject(TimestampMixin, Base):
+    __tablename__ = "bg_projects"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    client_id: Mapped[int | None] = mapped_column(ForeignKey("clients.id"), nullable=True, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    location: Mapped[str] = mapped_column(String(255), default="")
+    status: Mapped[str] = mapped_column(String(50), default="planning")
+    start_date: Mapped[str] = mapped_column(String(20), default="")
+    end_date: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    total_budget: Mapped[float] = mapped_column(Float, default=0)
+    spent_to_date: Mapped[float] = mapped_column(Float, default=0)
+    completion_pct: Mapped[int] = mapped_column(Integer, default=0)
+
+    client: Mapped["Client | None"] = relationship(foreign_keys=[client_id])
+    boq_items: Mapped[list["BGBOQItem"]] = relationship(
+        back_populates="project", cascade="all, delete-orphan"
+    )
+    purchase_orders: Mapped[list["BGPurchaseOrder"]] = relationship(
+        back_populates="project", cascade="all, delete-orphan"
+    )
+    expenses: Mapped[list["BGExpense"]] = relationship(
+        back_populates="project", cascade="all, delete-orphan"
+    )
+
+
+class BGBOQItem(TimestampMixin, Base):
+    __tablename__ = "bg_boq_items"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("bg_projects.id"), index=True, nullable=False)
+    item_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    unit: Mapped[str] = mapped_column(String(50), default="unit")
+    quantity: Mapped[float] = mapped_column(Float, default=0)
+    unit_cost: Mapped[float] = mapped_column(Float, default=0)
+    total_cost: Mapped[float] = mapped_column(Float, default=0)
+    category: Mapped[str] = mapped_column(String(100), default="")
+    notes: Mapped[str] = mapped_column(Text, default="")
+
+    project: Mapped["BGProject"] = relationship(back_populates="boq_items")
+
+
+class BGVendor(TimestampMixin, Base):
+    __tablename__ = "bg_vendors"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    contact: Mapped[str] = mapped_column(String(255), default="")
+    email: Mapped[str] = mapped_column(String(255), default="")
+    category: Mapped[str] = mapped_column(String(100), default="")
+    rating: Mapped[float] = mapped_column(Float, default=0)
+
+    purchase_orders: Mapped[list["BGPurchaseOrder"]] = relationship(back_populates="vendor")
+
+
+class BGPurchaseOrder(TimestampMixin, Base):
+    __tablename__ = "bg_purchase_orders"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("bg_projects.id"), index=True, nullable=False)
+    vendor_id: Mapped[int] = mapped_column(ForeignKey("bg_vendors.id"), index=True, nullable=False)
+    amount: Mapped[float] = mapped_column(Float, default=0)
+    status: Mapped[str] = mapped_column(String(50), default="draft")
+    description: Mapped[str] = mapped_column(Text, default="")
+
+    project: Mapped["BGProject"] = relationship(back_populates="purchase_orders")
+    vendor: Mapped["BGVendor"] = relationship(back_populates="purchase_orders")
+
+
+class BGExpense(TimestampMixin, Base):
+    __tablename__ = "bg_expenses"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("bg_projects.id"), index=True, nullable=False)
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    category: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, default="")
+    date: Mapped[str] = mapped_column(String(20), default="")
+
+    project: Mapped["BGProject"] = relationship(back_populates="expenses")
+
+
+# ── GridSphere Core ────────────────────────────────────────────────────────────
+
+class AgentRun(TimestampMixin, Base):
+    """Persistent log of every AI agent execution."""
+    __tablename__ = "agent_runs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    agent_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    trigger_event: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="running")
+    input_payload: Mapped[str] = mapped_column(Text, default="{}")
+    output_payload: Mapped[str] = mapped_column(Text, default="{}")
+    decision_log: Mapped[str] = mapped_column(Text, default="[]")
+    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tenant_id: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
+
+
+class SystemEvent(TimestampMixin, Base):
+    """Event bus persistence — every published event is stored here."""
+    __tablename__ = "system_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    event_name: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    payload: Mapped[str] = mapped_column(Text, default="{}")
+    processed: Mapped[bool] = mapped_column(Boolean, default=False)
+    tenant_id: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
+
+
+class TenantConfig(TimestampMixin, Base):
+    """Per-tenant infrastructure configuration created by DeploymentAgent."""
+    __tablename__ = "tenant_configs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
+    config: Mapped[str] = mapped_column(Text, default="{}")
+    storage_bucket: Mapped[str] = mapped_column(String(255), default="")
+    db_schema: Mapped[str] = mapped_column(String(120), default="")
+    provisioned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    provisioned_by: Mapped[str] = mapped_column(String(100), default="manual")

@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.agents.router import router as agents_router
+from app.ai_agents.router import router as ai_agents_router
+from app.buildgrid.router import router as buildgrid_router
 from app.analytics.router import router as analytics_router
 from app.auth.router import router as auth_router
 from app.core.config import get_settings
@@ -10,6 +12,7 @@ from app.customers.router import router as customers_router
 from app.dashboard.router import router as dashboard_router
 from app.deployments.router import router as deployments_router
 from app.finance.router import router as finance_router
+from app.gridsphere_core.router import router as gridsphere_router
 from app.infrastructure.router import router as infrastructure_router
 from app.pricing.router import router as pricing_router
 from app.products.router import router as products_router
@@ -50,3 +53,6 @@ app.include_router(tasks_router, prefix=settings.api_v1_prefix)
 app.include_router(deployments_router, prefix=settings.api_v1_prefix)
 app.include_router(pricing_router, prefix=settings.api_v1_prefix)
 app.include_router(crm_router, prefix=settings.api_v1_prefix)
+app.include_router(buildgrid_router, prefix=settings.api_v1_prefix)
+app.include_router(gridsphere_router, prefix=settings.api_v1_prefix)
+app.include_router(ai_agents_router, prefix=settings.api_v1_prefix)

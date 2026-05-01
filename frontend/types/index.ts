@@ -179,6 +179,8 @@ export type NavItem = {
   children?: { href: string; label: string }[];
 };
 
+export type WorkspaceMode = "hq" | "tenant";
+
 // ── Pricing ──────────────────────────────────────────────────────────────────
 
 export type Plan = {
@@ -232,4 +234,128 @@ export type Client = {
   products: ClientProduct[];
   users: ClientUser[];
   createdAt: string;
+};
+
+// ── BuildGrid ─────────────────────────────────────────────────────────────────
+
+export type BGProjectStatus = "planning" | "active" | "completed" | "on_hold";
+
+export type BGProject = {
+  id: string;
+  tenantId: string;
+  clientId?: string;
+  clientName?: string;
+  name: string;
+  location?: string;
+  status: BGProjectStatus;
+  startDate: string;
+  endDate?: string;
+  totalBudget: number;
+  spentToDate: number;
+  completionPct: number;
+  activeOrders: number;
+  boqCount: number;
+  createdAt: string;
+};
+
+export type BGBOQItem = {
+  id: string;
+  projectId: string;
+  itemName: string;
+  unit: string;
+  quantity: number;
+  unitCost: number;
+  totalCost: number;
+  category: string;
+  notes?: string;
+};
+
+export type BGVendor = {
+  id: string;
+  tenantId: string;
+  name: string;
+  contact?: string;
+  email?: string;
+  category?: string;
+  rating?: number;
+};
+
+export type BGPurchaseOrderStatus = "draft" | "sent" | "approved" | "fulfilled" | "cancelled";
+
+export type BGPurchaseOrder = {
+  id: string;
+  projectId: string;
+  projectName?: string;
+  vendorId: string;
+  vendorName?: string;
+  amount: number;
+  status: BGPurchaseOrderStatus;
+  description?: string;
+  createdAt: string;
+};
+
+// ── GridSphere Core ────────────────────────────────────────────────────────────
+
+export type AgentRunStatus = "running" | "completed" | "failed";
+
+export type AgentRunSummary = {
+  id: number;
+  agentType: string;
+  triggerEvent: string;
+  status: AgentRunStatus;
+  tenantId: string | null;
+  durationMs: number | null;
+  createdAt: string;
+};
+
+export type AgentRunDetail = AgentRunSummary & {
+  inputPayload: Record<string, unknown>;
+  outputPayload: Record<string, unknown>;
+  decisionLog: Array<{ step: string; status: string; ts: string; [key: string]: unknown }>;
+  error: string | null;
+  updatedAt: string;
+};
+
+export type SystemEventRecord = {
+  id: number;
+  eventName: string;
+  tenantId: string | null;
+  processed: boolean;
+  createdAt: string;
+};
+
+export type TenantOverview = {
+  id: number;
+  tenantId: string;
+  name: string;
+  organization: string;
+  industry: string;
+  region: string;
+  onboardingStatus: OnboardingStatus;
+  planName: string | null;
+  dealValue: number;
+  portalEnabled: boolean;
+  activeProducts: string[];
+  totalProducts: number;
+  createdAt: string;
+};
+
+export type TenantConfig = {
+  tenantId: string;
+  config: Record<string, unknown>;
+  storageBucket: string;
+  dbSchema: string;
+  provisionedAt: string | null;
+  provisionedBy: string;
+};
+
+export type CommandCentreOverview = {
+  totalTenants: number;
+  activeTenants: number;
+  totalArr: number;
+  productDistribution: Record<string, number>;
+  agentRuns24h: number;
+  agentFailures24h: number;
+  recentAgentRuns: AgentRunSummary[];
+  recentEvents: SystemEventRecord[];
 };

@@ -28,9 +28,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 function MobileNav() {
   const pathname = usePathname();
 
+  // Flatten for mobile strip: groups show parent link + children (using parent icon)
+  const flatItems = navItems.flatMap((item) => {
+    if (item.children) {
+      return [
+        ...(item.href ? [{ href: item.href, label: item.label, icon: item.icon }] : []),
+        ...item.children.map((child) => ({ href: child.href, label: child.label, icon: item.icon })),
+      ];
+    }
+    return item.href ? [{ href: item.href, label: item.label, icon: item.icon }] : [];
+  });
+
   return (
     <nav className="sticky top-16 z-10 flex gap-2 overflow-x-auto border-b border-white/10 bg-slate-950/70 px-4 py-2 backdrop-blur-xl lg:hidden">
-      {navItems.map((item) => {
+      {flatItems.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         const Icon = item.icon;
 

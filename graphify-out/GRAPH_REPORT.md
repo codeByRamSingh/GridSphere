@@ -1,94 +1,65 @@
-# Graph Report - .  (2026-04-30)
+# Graph Report - GridSphere  (2026-04-30)
 
 ## Corpus Check
-- Corpus is ~13,503 words - fits in a single context window. You may not need a graph.
+- 89 files · ~20,790 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 368 nodes · 389 edges · 56 communities detected
-- Extraction: 81% EXTRACTED · 19% INFERRED · 0% AMBIGUOUS · INFERRED: 73 edges (avg confidence: 0.77)
-- Token cost: 14,000 input · 4,200 output
+- 228 nodes · 258 edges · 26 communities detected
+- Extraction: 77% EXTRACTED · 23% INFERRED · 0% AMBIGUOUS · INFERRED: 59 edges (avg confidence: 0.61)
+- Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Analytics & Routing Layer|Analytics & Routing Layer]]
-- [[_COMMUNITY_AI Workforce Interface|AI Workforce Interface]]
-- [[_COMMUNITY_Mock-First API & Data Layer|Mock-First API & Data Layer]]
-- [[_COMMUNITY_Business Domain Aggregators|Business Domain Aggregators]]
-- [[_COMMUNITY_Pydantic Schema Layer|Pydantic Schema Layer]]
-- [[_COMMUNITY_Database & ORM Layer|Database & ORM Layer]]
-- [[_COMMUNITY_UI Component Library|UI Component Library]]
-- [[_COMMUNITY_Auth & JWT Security|Auth & JWT Security]]
-- [[_COMMUNITY_FastAPI Router Registry|FastAPI Router Registry]]
-- [[_COMMUNITY_TypeScript Type System|TypeScript Type System]]
-- [[_COMMUNITY_Layout & Navigation Shell|Layout & Navigation Shell]]
-- [[_COMMUNITY_Products Router|Products Router]]
-- [[_COMMUNITY_Alembic Migrations|Alembic Migrations]]
-- [[_COMMUNITY_Dashboard Router|Dashboard Router]]
-- [[_COMMUNITY_API Client|API Client]]
-- [[_COMMUNITY_React Root & Providers|React Root & Providers]]
-- [[_COMMUNITY_App Init|App Init]]
-- [[_COMMUNITY_Products Init|Products Init]]
-- [[_COMMUNITY_Dashboard Init|Dashboard Init]]
-- [[_COMMUNITY_DB Init|DB Init]]
-- [[_COMMUNITY_Tasks Init|Tasks Init]]
-- [[_COMMUNITY_Infrastructure Init|Infrastructure Init]]
-- [[_COMMUNITY_Agents Init|Agents Init]]
-- [[_COMMUNITY_Core Init|Core Init]]
-- [[_COMMUNITY_Auth Init|Auth Init]]
-- [[_COMMUNITY_Deployments Init|Deployments Init]]
-- [[_COMMUNITY_Infrastructure Page|Infrastructure Page]]
-- [[_COMMUNITY_Health Check|Health Check]]
-- [[_COMMUNITY_User Read Schema|User Read Schema]]
-- [[_COMMUNITY_Analytics Funnel|Analytics Funnel]]
-- [[_COMMUNITY_Analytics Module|Analytics Module]]
-- [[_COMMUNITY_Customers Module|Customers Module]]
-- [[_COMMUNITY_Finance Module|Finance Module]]
-- [[_COMMUNITY_Dashboard Module|Dashboard Module]]
-- [[_COMMUNITY_Tasks Module|Tasks Module]]
-- [[_COMMUNITY_Infrastructure Module|Infrastructure Module]]
-- [[_COMMUNITY_Agents Module|Agents Module]]
-- [[_COMMUNITY_Deployments Module|Deployments Module]]
-- [[_COMMUNITY_Pydantic Settings Dep|Pydantic Settings Dep]]
-- [[_COMMUNITY_Alembic Dep|Alembic Dep]]
-- [[_COMMUNITY_Uvicorn Dep|Uvicorn Dep]]
-- [[_COMMUNITY_Tailwind Config Node|Tailwind Config Node]]
-- [[_COMMUNITY_Next Config Node|Next Config Node]]
-- [[_COMMUNITY_PostCSS Config Node|PostCSS Config Node]]
-- [[_COMMUNITY_KPI Type|KPI Type]]
-- [[_COMMUNITY_Activity Type|Activity Type]]
-- [[_COMMUNITY_Global Region Type|Global Region Type]]
-- [[_COMMUNITY_Command Alert Type|Command Alert Type]]
-- [[_COMMUNITY_Agent Workflow Node Type|Agent Workflow Node Type]]
-- [[_COMMUNITY_Phase Connector Type|Phase Connector Type]]
-- [[_COMMUNITY_Nav Item Type|Nav Item Type]]
-- [[_COMMUNITY_Page Header Component|Page Header Component]]
-- [[_COMMUNITY_Command Alerts Mock|Command Alerts Mock]]
-- [[_COMMUNITY_Global Regions Mock|Global Regions Mock]]
-- [[_COMMUNITY_Factory Stages Mock|Factory Stages Mock]]
-- [[_COMMUNITY_Product Ideas Mock|Product Ideas Mock]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 8|Community 8]]
+- [[_COMMUNITY_Community 9|Community 9]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 79|Community 79]]
+- [[_COMMUNITY_Community 80|Community 80]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `dashboardApi Client Object` - 20 edges
-2. `Base` - 13 edges
-3. `Base (DeclarativeBase)` - 13 edges
-4. `run_seed()` - 12 edges
-5. `TimestampMixin` - 12 edges
-6. `TimestampMixin` - 10 edges
-7. `Product ORM model` - 10 edges
-8. `executive_dashboard` - 9 edges
-9. `ProductCard Component` - 9 edges
-10. `finance_dashboard` - 8 edges
+1. `Base` - 17 edges
+2. `TimestampMixin` - 16 edges
+3. `run_seed()` - 13 edges
+4. `Client` - 13 edges
+5. `ClientProduct` - 13 edges
+6. `ClientUser` - 13 edges
+7. `_seed_pricing_and_crm()` - 6 edges
+8. `Plan` - 6 edges
+9. `User` - 5 edges
+10. `Product` - 5 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `getJson Fetch Helper` --implements--> `Mock-First Resilience Pattern`  [INFERRED]
-  frontend/lib/api.ts → README.md
-- `products Mock Dataset` --references--> `BuildGrid Product`  [INFERRED]
-  frontend/lib/mock-data.ts → README.md
-- `products Mock Dataset` --references--> `CampusGrid Product`  [INFERRED]
-  frontend/lib/mock-data.ts → README.md
-- `products Mock Dataset` --references--> `FarmGrid Product`  [INFERRED]
-  frontend/lib/mock-data.ts → README.md
-- `agents Mock Dataset` --references--> `AI Agent Workflow Pipeline`  [INFERRED]
-  frontend/lib/mock-data.ts → README.md
+- `run_seed()` --calls--> `get_password_hash()`  [INFERRED]
+  backend/app/db/seed.py → backend/app/core/security.py
+- `PlanRead` --uses--> `Plan`  [INFERRED]
+  backend/app/pricing/schemas.py → backend/app/db/models.py
+- `_seed_pricing_and_crm()` --calls--> `Plan`  [INFERRED]
+  backend/app/db/seed.py → backend/app/db/models.py
+- `Client` --uses--> `Base`  [INFERRED]
+  backend/app/db/models.py → backend/app/db/base.py
+- `ClientProduct` --uses--> `Base`  [INFERRED]
+  backend/app/db/models.py → backend/app/db/base.py
 
 ## Hyperedges (group relationships)
 - **FastAPI JWT Authentication Flow** — auth_login, security_verifypassword, security_createaccesstoken, session_getdb [EXTRACTED 0.95]
@@ -106,334 +77,162 @@
 
 ## Communities
 
-### Community 0 - "Analytics & Routing Layer"
-Cohesion: 0.09
-Nodes (38): run_migrations_offline, run_migrations_online, analytics_dashboard endpoint (GET /analytics), AnalyticsPoint schema, Analytics APIRouter, login endpoint (POST /auth/login), LoginRequest schema, Auth APIRouter (+30 more)
-
-### Community 1 - "AI Workforce Interface"
-Cohesion: 0.08
-Nodes (29): AgentCard Component, AgentLogRow Component, AgentMetric Component, AIWorkforcePage Component, AnalyticsPage Component, DashboardPage Component, FactoryColumn Component, FactoryMetric Component (+21 more)
-
-### Community 2 - "Mock-First API & Data Layer"
-Cohesion: 0.07
-Nodes (29): dashboardApi Client Object, getJson Fetch Helper, mock Data Delay Helper, acquisition Mock Dataset, activities Mock Dataset, agentLogs Mock Dataset, agents Mock Dataset, agentWorkflow Mock Dataset (+21 more)
-
-### Community 3 - "Business Domain Aggregators"
+### Community 0 - "Community 0"
 Cohesion: 0.11
-Nodes (27): AgentRead Schema, list_agents, list_customers, executive_dashboard, _revenue_for (helper), Agent DB Model, Customer DB Model, Deployment DB Model (+19 more)
+Nodes (27): AgentRead, AnalyticsPoint, FunnelPoint, BaseModel, create_client(), auto_tenant_id(), ClientCreate, ClientProductCreate (+19 more)
 
-### Community 4 - "Pydantic Schema Layer"
-Cohesion: 0.12
-Nodes (15): AgentRead, AnalyticsPoint, FunnelPoint, LoginRequest, UserRead, BaseModel, ExpenseBreakdown, FinancePoint (+7 more)
+### Community 1 - "Community 1"
+Cohesion: 0.38
+Nodes (16): Base, Base, Agent, Customer, Deployment, Expense, InfrastructureMetric, Plan (+8 more)
 
-### Community 5 - "Database & ORM Layer"
-Cohesion: 0.36
-Nodes (15): Base, Base, Agent, Customer, Deployment, Expense, InfrastructureMetric, Product (+7 more)
+### Community 2 - "Community 2"
+Cohesion: 0.15
+Nodes (10): login(), LoginRequest, TokenResponse, UserRead, BaseSettings, get_settings(), Settings, create_access_token() (+2 more)
 
-### Community 6 - "UI Component Library"
-Cohesion: 0.22
-Nodes (17): ActivityFeed Component, Badge UI Component, badgeVariants CVA Config, Button UI Component, buttonVariants CVA Config, Card UI Component, CardContent UI Component, CardDescription UI Component (+9 more)
-
-### Community 7 - "Auth & JWT Security"
-Cohesion: 0.2
-Nodes (8): login(), TokenResponse, BaseSettings, get_settings(), Settings, create_access_token(), get_password_hash(), verify_password()
-
-### Community 8 - "FastAPI Router Registry"
-Cohesion: 0.39
-Nodes (9): Agents Router, Customers Router, Dashboard Router, Deployments Router, Finance Router, Infrastructure Router, FastAPI 0.111.0 Dependency, SQLAlchemy 2.0.31 Dependency (+1 more)
-
-### Community 9 - "TypeScript Type System"
+### Community 3 - "Community 3"
 Cohesion: 0.29
-Nodes (8): ChartPoint Type, Product Type, ProductCustomer Type, ProductDeployment Type, ProductRoadmapItem Type, ProductSupportTicket Type, ProductUsageMetric Type, Status Type
+Nodes (5): addUser(), removeUser(), set(), toggleProduct(), updateUser()
 
-### Community 10 - "Layout & Navigation Shell"
-Cohesion: 0.33
-Nodes (7): AppShell Layout Component, MobileNav Layout Component, Input UI Component, navItems Navigation Config, Sidebar Layout Component, TopNav Layout Component, useWorkspaceStore Zustand Store
+### Community 4 - "Community 4"
+Cohesion: 0.6
+Nodes (3): get_client(), _load_client(), update_client_status()
 
-### Community 12 - "Products Router"
+### Community 6 - "Community 6"
 Cohesion: 0.83
 Nodes (3): get_product(), list_products(), serialize_product()
 
-### Community 13 - "Alembic Migrations"
+### Community 7 - "Community 7"
+Cohesion: 0.5
+Nodes (1): PlanRead
+
+### Community 8 - "Community 8"
+Cohesion: 0.5
+Nodes (1): CRM and Pricing schema  Revision ID: 0002_crm_pricing_schema Revises: 0001_initi
+
+### Community 9 - "Community 9"
 Cohesion: 0.5
 Nodes (1): initial GridSphere schema  Revision ID: 0001_initial_schema Revises: Create Date
 
-### Community 15 - "Dashboard Router"
+### Community 11 - "Community 11"
+Cohesion: 0.5
+Nodes (4): BuildGrid Product, CampusGrid Product, FarmGrid Product, GridSphere Platform
+
+### Community 12 - "Community 12"
 Cohesion: 1.0
 Nodes (2): executive_dashboard(), _revenue_for()
 
-### Community 19 - "API Client"
+### Community 16 - "Community 16"
 Cohesion: 1.0
 Nodes (2): getJson(), mock()
 
-### Community 20 - "React Root & Providers"
-Cohesion: 0.67
-Nodes (3): RootLayout Component, Providers Component, QueryClient Instance
-
-### Community 22 - "App Init"
+### Community 18 - "Community 18"
 Cohesion: 1.0
 Nodes (1): GridSphere backend application.
 
-### Community 23 - "Products Init"
+### Community 19 - "Community 19"
 Cohesion: 1.0
 Nodes (1): Product portfolio endpoints.
 
-### Community 27 - "Dashboard Init"
+### Community 21 - "Community 21"
+Cohesion: 1.0
+Nodes (1): Pricing plans endpoints.
+
+### Community 25 - "Community 25"
 Cohesion: 1.0
 Nodes (1): Executive dashboard endpoints.
 
-### Community 29 - "DB Init"
+### Community 27 - "Community 27"
 Cohesion: 1.0
 Nodes (1): Database session and model declarations.
 
-### Community 30 - "Tasks Init"
+### Community 28 - "Community 28"
 Cohesion: 1.0
 Nodes (1): Task and product factory endpoints.
 
-### Community 32 - "Infrastructure Init"
+### Community 30 - "Community 30"
 Cohesion: 1.0
 Nodes (1): Infrastructure monitoring endpoints.
 
-### Community 34 - "Agents Init"
+### Community 32 - "Community 32"
 Cohesion: 1.0
 Nodes (1): AI workforce endpoints.
 
-### Community 35 - "Core Init"
+### Community 33 - "Community 33"
 Cohesion: 1.0
 Nodes (1): Core settings and security helpers.
 
-### Community 36 - "Auth Init"
+### Community 34 - "Community 34"
+Cohesion: 1.0
+Nodes (1): CRM — client onboarding and management endpoints.
+
+### Community 35 - "Community 35"
 Cohesion: 1.0
 Nodes (1): Authentication endpoints.
 
-### Community 38 - "Deployments Init"
+### Community 37 - "Community 37"
 Cohesion: 1.0
 Nodes (1): Deployment endpoints.
 
-### Community 53 - "Infrastructure Page"
+### Community 79 - "Community 79"
 Cohesion: 1.0
-Nodes (2): AlertItem Component, InfrastructurePage Component
+Nodes (1): Mock-First Resilience Pattern
 
-### Community 76 - "Health Check"
+### Community 80 - "Community 80"
 Cohesion: 1.0
-Nodes (1): healthcheck endpoint
-
-### Community 77 - "User Read Schema"
-Cohesion: 1.0
-Nodes (1): UserRead schema
-
-### Community 78 - "Analytics Funnel"
-Cohesion: 1.0
-Nodes (1): FunnelPoint schema
-
-### Community 79 - "Analytics Module"
-Cohesion: 1.0
-Nodes (1): Analytics Module Init
-
-### Community 80 - "Customers Module"
-Cohesion: 1.0
-Nodes (1): Customers Module Init
-
-### Community 81 - "Finance Module"
-Cohesion: 1.0
-Nodes (1): Finance Module Init
-
-### Community 82 - "Dashboard Module"
-Cohesion: 1.0
-Nodes (1): Dashboard Module Init
-
-### Community 83 - "Tasks Module"
-Cohesion: 1.0
-Nodes (1): Tasks Module Init
-
-### Community 84 - "Infrastructure Module"
-Cohesion: 1.0
-Nodes (1): Infrastructure Module Init
-
-### Community 85 - "Agents Module"
-Cohesion: 1.0
-Nodes (1): Agents Module Init
-
-### Community 86 - "Deployments Module"
-Cohesion: 1.0
-Nodes (1): Deployments Module Init
-
-### Community 87 - "Pydantic Settings Dep"
-Cohesion: 1.0
-Nodes (1): pydantic-settings 2.3.4 Dependency
-
-### Community 88 - "Alembic Dep"
-Cohesion: 1.0
-Nodes (1): Alembic 1.13.2 Dependency
-
-### Community 89 - "Uvicorn Dep"
-Cohesion: 1.0
-Nodes (1): Uvicorn 0.30.1 Dependency
-
-### Community 90 - "Tailwind Config Node"
-Cohesion: 1.0
-Nodes (1): Tailwind CSS Config
-
-### Community 91 - "Next Config Node"
-Cohesion: 1.0
-Nodes (1): Next.js Config
-
-### Community 92 - "PostCSS Config Node"
-Cohesion: 1.0
-Nodes (1): PostCSS Config
-
-### Community 93 - "KPI Type"
-Cohesion: 1.0
-Nodes (1): Kpi Type
-
-### Community 94 - "Activity Type"
-Cohesion: 1.0
-Nodes (1): Activity Type
-
-### Community 95 - "Global Region Type"
-Cohesion: 1.0
-Nodes (1): GlobalRegion Type
-
-### Community 96 - "Command Alert Type"
-Cohesion: 1.0
-Nodes (1): CommandAlert Type
-
-### Community 97 - "Agent Workflow Node Type"
-Cohesion: 1.0
-Nodes (1): AgentWorkflowNode Type
-
-### Community 98 - "Phase Connector Type"
-Cohesion: 1.0
-Nodes (1): PhaseTwoConnector Type
-
-### Community 99 - "Nav Item Type"
-Cohesion: 1.0
-Nodes (1): NavItem Type
-
-### Community 100 - "Page Header Component"
-Cohesion: 1.0
-Nodes (1): PageHeader Component
-
-### Community 101 - "Command Alerts Mock"
-Cohesion: 1.0
-Nodes (1): commandAlerts Mock Dataset
-
-### Community 102 - "Global Regions Mock"
-Cohesion: 1.0
-Nodes (1): globalRegions Mock Dataset
-
-### Community 103 - "Factory Stages Mock"
-Cohesion: 1.0
-Nodes (1): factoryStages Mock Dataset
-
-### Community 104 - "Product Ideas Mock"
-Cohesion: 1.0
-Nodes (1): productIdeas Mock Dataset
+Nodes (1): AI Agent Workflow Pipeline
 
 ## Knowledge Gaps
-- **103 isolated node(s):** `GridSphere backend application.`, `Product portfolio endpoints.`, `Executive dashboard endpoints.`, `Database session and model declarations.`, `Task and product factory endpoints.` (+98 more)
+- **19 isolated node(s):** `GridSphere backend application.`, `Product portfolio endpoints.`, `Pricing plans endpoints.`, `Executive dashboard endpoints.`, `Database session and model declarations.` (+14 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Alembic Migrations`** (4 nodes): `0001_initial_schema.py`, `downgrade()`, `initial GridSphere schema  Revision ID: 0001_initial_schema Revises: Create Date`, `upgrade()`
+- **Thin community `Community 7`** (4 nodes): `schemas.py`, `from_orm()`, `PlanRead`, `savings_percent()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dashboard Router`** (3 nodes): `router.py`, `executive_dashboard()`, `_revenue_for()`
+- **Thin community `Community 8`** (4 nodes): `0002_crm_pricing_schema.py`, `downgrade()`, `CRM and Pricing schema  Revision ID: 0002_crm_pricing_schema Revises: 0001_initi`, `upgrade()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `API Client`** (3 nodes): `api.ts`, `getJson()`, `mock()`
+- **Thin community `Community 9`** (4 nodes): `0001_initial_schema.py`, `downgrade()`, `initial GridSphere schema  Revision ID: 0001_initial_schema Revises: Create Date`, `upgrade()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `App Init`** (2 nodes): `GridSphere backend application.`, `__init__.py`
+- **Thin community `Community 12`** (3 nodes): `router.py`, `executive_dashboard()`, `_revenue_for()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Products Init`** (2 nodes): `__init__.py`, `Product portfolio endpoints.`
+- **Thin community `Community 16`** (3 nodes): `api.ts`, `getJson()`, `mock()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dashboard Init`** (2 nodes): `__init__.py`, `Executive dashboard endpoints.`
+- **Thin community `Community 18`** (2 nodes): `GridSphere backend application.`, `__init__.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `DB Init`** (2 nodes): `__init__.py`, `Database session and model declarations.`
+- **Thin community `Community 19`** (2 nodes): `__init__.py`, `Product portfolio endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tasks Init`** (2 nodes): `__init__.py`, `Task and product factory endpoints.`
+- **Thin community `Community 21`** (2 nodes): `__init__.py`, `Pricing plans endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Infrastructure Init`** (2 nodes): `__init__.py`, `Infrastructure monitoring endpoints.`
+- **Thin community `Community 25`** (2 nodes): `__init__.py`, `Executive dashboard endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Agents Init`** (2 nodes): `AI workforce endpoints.`, `__init__.py`
+- **Thin community `Community 27`** (2 nodes): `__init__.py`, `Database session and model declarations.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Core Init`** (2 nodes): `__init__.py`, `Core settings and security helpers.`
+- **Thin community `Community 28`** (2 nodes): `__init__.py`, `Task and product factory endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Auth Init`** (2 nodes): `Authentication endpoints.`, `__init__.py`
+- **Thin community `Community 30`** (2 nodes): `__init__.py`, `Infrastructure monitoring endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Deployments Init`** (2 nodes): `__init__.py`, `Deployment endpoints.`
+- **Thin community `Community 32`** (2 nodes): `AI workforce endpoints.`, `__init__.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Infrastructure Page`** (2 nodes): `AlertItem Component`, `InfrastructurePage Component`
+- **Thin community `Community 33`** (2 nodes): `__init__.py`, `Core settings and security helpers.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Health Check`** (1 nodes): `healthcheck endpoint`
+- **Thin community `Community 34`** (2 nodes): `__init__.py`, `CRM — client onboarding and management endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `User Read Schema`** (1 nodes): `UserRead schema`
+- **Thin community `Community 35`** (2 nodes): `Authentication endpoints.`, `__init__.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Analytics Funnel`** (1 nodes): `FunnelPoint schema`
+- **Thin community `Community 37`** (2 nodes): `__init__.py`, `Deployment endpoints.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Analytics Module`** (1 nodes): `Analytics Module Init`
+- **Thin community `Community 79`** (1 nodes): `Mock-First Resilience Pattern`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Customers Module`** (1 nodes): `Customers Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Finance Module`** (1 nodes): `Finance Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dashboard Module`** (1 nodes): `Dashboard Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tasks Module`** (1 nodes): `Tasks Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Infrastructure Module`** (1 nodes): `Infrastructure Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Agents Module`** (1 nodes): `Agents Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Deployments Module`** (1 nodes): `Deployments Module Init`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Pydantic Settings Dep`** (1 nodes): `pydantic-settings 2.3.4 Dependency`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Alembic Dep`** (1 nodes): `Alembic 1.13.2 Dependency`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Uvicorn Dep`** (1 nodes): `Uvicorn 0.30.1 Dependency`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tailwind Config Node`** (1 nodes): `Tailwind CSS Config`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Next Config Node`** (1 nodes): `Next.js Config`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `PostCSS Config Node`** (1 nodes): `PostCSS Config`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `KPI Type`** (1 nodes): `Kpi Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Activity Type`** (1 nodes): `Activity Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Global Region Type`** (1 nodes): `GlobalRegion Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Command Alert Type`** (1 nodes): `CommandAlert Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Agent Workflow Node Type`** (1 nodes): `AgentWorkflowNode Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Phase Connector Type`** (1 nodes): `PhaseTwoConnector Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Nav Item Type`** (1 nodes): `NavItem Type`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Page Header Component`** (1 nodes): `PageHeader Component`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Command Alerts Mock`** (1 nodes): `commandAlerts Mock Dataset`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Global Regions Mock`** (1 nodes): `globalRegions Mock Dataset`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Factory Stages Mock`** (1 nodes): `factoryStages Mock Dataset`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Product Ideas Mock`** (1 nodes): `productIdeas Mock Dataset`
+- **Thin community `Community 80`** (1 nodes): `AI Agent Workflow Pipeline`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `TokenResponse` connect `Auth & JWT Security` to `Pydantic Schema Layer`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `run_seed()` connect `Database & ORM Layer` to `Auth & JWT Security`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Are the 11 inferred relationships involving `Base` (e.g. with `TimestampMixin` and `User`) actually correct?**
-  _`Base` has 11 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `TokenResponse` connect `Community 2` to `Community 0`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Are the 15 inferred relationships involving `Base` (e.g. with `TimestampMixin` and `User`) actually correct?**
+  _`Base` has 15 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 11 inferred relationships involving `run_seed()` (e.g. with `User` and `get_password_hash()`) actually correct?**
   _`run_seed()` has 11 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `GridSphere backend application.`, `Product portfolio endpoints.`, `Executive dashboard endpoints.` to the rest of the system?**
-  _103 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Analytics & Routing Layer` be split into smaller, more focused modules?**
-  _Cohesion score 0.09 - nodes in this community are weakly interconnected._
-- **Should `AI Workforce Interface` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+- **What connects `GridSphere backend application.`, `Product portfolio endpoints.`, `Pricing plans endpoints.` to the rest of the system?**
+  _19 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Community 0` be split into smaller, more focused modules?**
+  _Cohesion score 0.11 - nodes in this community are weakly interconnected._

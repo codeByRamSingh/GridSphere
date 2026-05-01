@@ -20,6 +20,10 @@ class Settings(BaseSettings):
         default="http://localhost:3000",
         alias="BACKEND_CORS_ORIGINS",
     )
+    redis_url: str = Field(
+        default="redis://localhost:6379/0",
+        alias="REDIS_URL",
+    )
 
     @property
     def cors_origins(self) -> list[str | AnyHttpUrl]:
