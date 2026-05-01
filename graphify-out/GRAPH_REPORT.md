@@ -1,7 +1,7 @@
 # Graph Report - GridSphere  (2026-05-01)
 
 ## Corpus Check
-- 127 files · ~36,206 words
+- 127 files · ~36,207 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
