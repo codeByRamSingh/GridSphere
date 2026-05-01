@@ -3,13 +3,8 @@
 import { Bell, ChevronDown, Command, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useWorkspaceStore } from "@/store/workspace-store";
-
-const workspaces = ["GridSphere HQ", "BuildGrid", "CampusGrid", "FarmGrid"];
 
 export function TopNav() {
-  const { workspace, setWorkspace } = useWorkspaceStore();
-
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-white/10 bg-slate-950/70 px-4 backdrop-blur-xl lg:pl-[19rem]">
       <Button size="icon" variant="ghost" className="lg:hidden" aria-label="Open navigation">
@@ -28,18 +23,6 @@ export function TopNav() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
-        <select
-          value={workspace}
-          onChange={(event) => setWorkspace(event.target.value)}
-          className="h-10 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-slate-200 outline-none transition focus:ring-2 focus:ring-cyan-300"
-          aria-label="Workspace selector"
-        >
-          {workspaces.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
         <Button size="icon" variant="ghost" aria-label="Notifications">
           <Bell className="h-5 w-5" />
         </Button>

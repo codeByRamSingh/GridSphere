@@ -1,4 +1,7 @@
 services:
+
+  # ── Data stores ──────────────────────────────────────────────────────────────
+
   postgres:
     image: postgres:16-alpine
     container_name: gridsphere-postgres
@@ -16,6 +19,21 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    container_name: gridsphere-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Backend API ──────────────────────────────────────────────────────────────
+
   backend:
     build:
       context: ./backend
@@ -24,15 +42,50 @@ services:
       DATABASE_URL: postgresql+psycopg://gridsphere:gridsphere@postgres:5432/gridsphere
       JWT_SECRET: change-me-in-production
       BACKEND_CORS_ORIGINS: http://localhost:3000
+      REDIS_URL: redis://redis:6379/0
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     command: >
       sh -c "alembic upgrade head &&
              python -m app.db.seed &&
              uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  # ── Celery worker (AI agents) ────────────────────────────────────────────────
+
+  celery-worker:
+    build:
+      context: ./backend
+    container_name: gridsphere-celery-worker
+    environment:
+      DATABASE_URL: postgresql+psycopg://gridsphere:gridsphere@postgres:5432/gridsphere
+      JWT_SECRET: change-me-in-production
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    command: >
+      celery -A celery_app worker
+        --queues=agents
+        --loglevel=info
+        --concurrency=2
+        --hostname=gridsphere-worker@%h
+
+  # ── Frontend ─────────────────────────────────────────────────────────────────
 
   frontend:
     build:
@@ -49,3 +102,4 @@ services:
 
 volumes:
   postgres-data:
+  redis-data:
